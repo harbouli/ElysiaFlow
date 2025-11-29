@@ -1,7 +1,12 @@
 import { Elysia } from "elysia";
 import sequelize from "./config/database";
 import { itemRoutes } from "./routes/item.routes";
-
+import { authRoutes } from "./routes/auth.routes";
+import { openapi } from "@elysiajs/openapi";
+import { toJsonSchema } from "@valibot/to-json-schema";
+import { cookie } from "@elysiajs/cookie";
+import { cors } from "@elysiajs/cors";
+import { csrfProtection } from "./middleware/csrf.middleware";
 async function initializeDatabase() {
   try {
     await sequelize.authenticate();
@@ -16,16 +21,26 @@ async function initializeDatabase() {
 await initializeDatabase();
 
 const app = new Elysia()
-  .get("/", () => ({
-    message: "Welcome to Elysia CRUD API with MVC Architecture + Sequelize",
-    endpoints: {
-      "GET /items": "Get all items",
-      "GET /items/:id": "Get item by ID",
-      "POST /items": "Create new item",
-      "PUT /items/:id": "Update item",
-      "DELETE /items/:id": "Delete item",
-    },
-  }))
+  // CORS configuration for cookie-based auth
+  .use(
+    cors({
+      origin: process.env.FRONTEND_URL || "http://localhost:3001",
+      credentials: true, // Required for cookies
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    })
+  )
+  // Cookie plugin
+  .use(cookie())
+  // CSRF Protection for cookie-based auth
+  .onBeforeHandle(csrfProtection)
+  // OpenAPI documentation
+  .use(
+    openapi({
+      mapJsonSchema: { valibot: toJsonSchema },
+    })
+  )
+  .use(authRoutes)
   .use(itemRoutes)
   .listen(3000);
 

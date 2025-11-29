@@ -1,15 +1,20 @@
 import sequelize from "../config/database";
 import "../models/item.model";
+import "../models/user.model";
+import "../models/refreshToken.model";
 
 async function syncDatabase() {
   try {
     console.log("Connecting to database...");
     await sequelize.authenticate();
-    console.log("Database connection established successfully");
+    console.log("✓ Database connection established successfully");
 
     console.log("Syncing database models...");
     await sequelize.sync({ alter: true });
-    console.log("Database models synced successfully");
+    console.log("✓ Database models synced successfully");
+    console.log("  - users");
+    console.log("  - refresh_tokens");
+    console.log("  - items");
 
     process.exit(0);
   } catch (error) {

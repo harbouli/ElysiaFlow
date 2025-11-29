@@ -1,4 +1,4 @@
-# Elysia CRUD API with MVC Architecture & Sequelize
+# Elysia CRUD API with MVC Architecture, Authentication & Sequelize
 
 <div align="center">
 
@@ -6,9 +6,10 @@
 ![Bun](https://img.shields.io/badge/Bun-1.0+-orange)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue)
+![JWT](https://img.shields.io/badge/JWT-Authentication-green)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-A high-performance REST API built with Elysia.js, Bun runtime, PostgreSQL, and Sequelize ORM following MVC architecture pattern.
+A high-performance REST API built with Elysia.js, Bun runtime, PostgreSQL, and Sequelize ORM featuring JWT authentication with refresh tokens and MVC architecture.
 
 **Created by [Mohamed Harbouli](https://github.com/harbouli)**
 
@@ -54,6 +55,17 @@ A high-performance REST API built with Elysia.js, Bun runtime, PostgreSQL, and S
 - Powered by Bun runtime for maximum performance
 - TypeScript for type safety and better DX
 
+🔐 **Advanced Authentication**
+
+- JWT access tokens (short-lived, 15 minutes)
+- JWT refresh tokens (long-lived, 7 days)
+- Secure Cookie-based Authentication (httpOnly, secure, sameSite)
+- Secure password hashing with bcrypt
+- Token refresh mechanism
+- Logout from single/all devices
+- Role-based access control (RBAC)
+- Protected routes with middleware
+
 🏗️ **Clean Architecture**
 
 - MVC pattern for separation of concerns
@@ -65,12 +77,17 @@ A high-performance REST API built with Elysia.js, Bun runtime, PostgreSQL, and S
 - PostgreSQL integration
 - Sequelize ORM with TypeScript support
 - Automatic migrations and schema sync
+- User and refresh token management
 
 🔒 **Robust**
 
-- Input validation with Elysia's type system
+- Input validation with Valibot schema validation
 - Comprehensive error handling
 - Database connection pooling
+- Secure authentication flow
+- CORS protection for cross-origin requests
+- CSRF protection for cookie-based authentication
+- Origin/Referer header validation
 
 📝 **Developer Friendly**
 
@@ -90,6 +107,11 @@ A high-performance REST API built with Elysia.js, Bun runtime, PostgreSQL, and S
 | [Sequelize](https://sequelize.org/)           | ORM                  | 6.37+   |
 | [PostgreSQL](https://www.postgresql.org/)     | Database             | 14+     |
 | [pg](https://www.npmjs.com/package/pg)        | PostgreSQL Driver    | 8.16+   |
+| [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) | JWT Auth | 9.0+ |
+| [bcrypt](https://www.npmjs.com/package/bcrypt) | Password Hashing | 6.0+ |
+| [@elysiajs/cookie](https://elysiajs.com/plugins/cookie.html) | Cookie Management | Latest |
+| [@elysiajs/cors](https://elysiajs.com/plugins/cors.html) | CORS Protection | Latest |
+| [valibot](https://valibot.dev/) | Schema Validation | Latest |
 
 ---
 
@@ -138,28 +160,39 @@ This project follows the **MVC (Model-View-Controller)** architectural pattern:
 elysia-crud-api/
 ├── src/
 │   ├── config/
-│   │   └── database.ts              # Sequelize database configuration
+│   │   └── database.ts                 # Sequelize database configuration
 │   │
 │   ├── controllers/
-│   │   └── item.controller.ts       # Business logic and request handlers
+│   │   ├── auth.controller.ts          # Authentication logic
+│   │   └── item.controller.ts          # Item CRUD handlers
 │   │
 │   ├── models/
-│   │   └── item.model.ts            # Sequelize models and data operations
+│   │   ├── user.model.ts               # User model with password hashing
+│   │   ├── refreshToken.model.ts       # Refresh token management
+│   │   └── item.model.ts               # Item model
 │   │
 │   ├── routes/
-│   │   └── item.routes.ts           # API route definitions
+│   │   ├── auth.routes.ts              # Authentication endpoints
+│   │   └── item.routes.ts              # Item CRUD endpoints
+│   │
+│   ├── middleware/
+│   │   └── auth.middleware.ts          # JWT authentication middleware
+│   │
+│   ├── utils/
+│   │   └── jwt.util.ts                 # JWT token utilities
 │   │
 │   ├── scripts/
-│   │   └── sync-db.ts               # Database synchronization utility
+│   │   └── sync-db.ts                  # Database synchronization utility
 │   │
-│   └── index.ts                     # Application entry point
+│   └── index.ts                        # Application entry point
 │
-├── .env                              # Environment variables (gitignored)
-├── .env.example                      # Environment template
-├── package.json                      # Dependencies and scripts
-├── tsconfig.json                     # TypeScript configuration
-├── bun.lockb                         # Bun lock file
-└── README.md                         # This file
+├── .env                                 # Environment variables (gitignored)
+├── .env.example                         # Environment template
+├── package.json                         # Dependencies and scripts
+├── tsconfig.json                        # TypeScript configuration
+├── bun.lockb                            # Bun lock file
+├── LICENSE                              # MIT License
+└── README.md                            # This file
 ```
 
 ### File Descriptions
@@ -318,13 +351,26 @@ You should see:
 
 ```json
 {
-  "message": "Welcome to Elysia CRUD API with MVC Architecture + Sequelize",
+  "message": "Welcome to Elysia CRUD API with MVC Architecture + Authentication",
+  "version": "1.0.0",
   "endpoints": {
-    "GET /items": "Get all items",
-    "GET /items/:id": "Get item by ID",
-    "POST /items": "Create new item",
-    "PUT /items/:id": "Update item",
-    "DELETE /items/:id": "Delete item"
+    "auth": {
+      "POST /auth/register": "Register new user",
+      "POST /auth/login": "Login user",
+      "POST /auth/refresh": "Refresh access token",
+      "POST /auth/logout": "Logout (revoke refresh token)",
+      "POST /auth/logout-all": "Logout from all devices",
+      "GET /auth/profile": "Get current user profile (protected)",
+      "PUT /auth/profile": "Update user profile (protected)",
+      "POST /auth/change-password": "Change password (protected)"
+    },
+    "items": {
+      "GET /items": "Get all items",
+      "GET /items/:id": "Get item by ID",
+      "POST /items": "Create new item",
+      "PUT /items/:id": "Update item",
+      "DELETE /items/:id": "Delete item"
+    }
   }
 }
 ```
@@ -346,19 +392,31 @@ DB_PASSWORD=your_password     # Database password
 # Application Configuration
 NODE_ENV=development          # Environment (development/production)
 PORT=3000                     # Server port
+FRONTEND_URL=http://localhost:3001  # Frontend URL for CORS
+
+# JWT Configuration
+JWT_ACCESS_SECRET=your-super-secret-access-token-key-change-this-in-production
+JWT_REFRESH_SECRET=your-super-secret-refresh-token-key-change-this-in-production
+JWT_ACCESS_EXPIRY=15m         # Access token expiry (15 minutes)
+JWT_REFRESH_EXPIRY=7d         # Refresh token expiry (7 days)
 ```
 
 ### Environment Descriptions
 
-| Variable      | Description            | Default       | Required |
-| ------------- | ---------------------- | ------------- | -------- |
-| `DB_HOST`     | PostgreSQL server host | `localhost`   | Yes      |
-| `DB_PORT`     | PostgreSQL server port | `5432`        | Yes      |
-| `DB_NAME`     | Database name          | `elysia_db`   | Yes      |
-| `DB_USER`     | Database username      | `postgres`    | Yes      |
-| `DB_PASSWORD` | Database password      | `postgres`    | Yes      |
-| `NODE_ENV`    | Environment mode       | `development` | No       |
-| `PORT`        | Server port            | `3000`        | No       |
+| Variable              | Description                  | Default       | Required |
+| --------------------- | ---------------------------- | ------------- | -------- |
+| `DB_HOST`             | PostgreSQL server host       | `localhost`   | Yes      |
+| `DB_PORT`             | PostgreSQL server port       | `5432`        | Yes      |
+| `DB_NAME`             | Database name                | `elysia_db`   | Yes      |
+| `DB_USER`             | Database username            | `postgres`    | Yes      |
+| `DB_PASSWORD`         | Database password            | `postgres`    | Yes      |
+| `NODE_ENV`            | Environment mode             | `development` | No       |
+| `PORT`                | Server port                  | `3000`        | No       |
+| `JWT_ACCESS_SECRET`   | Secret key for access tokens | -             | Yes      |
+| `JWT_REFRESH_SECRET`  | Secret key for refresh tokens| -             | Yes      |
+| `JWT_ACCESS_EXPIRY`   | Access token expiration time | `15m`         | No       |
+| `JWT_REFRESH_EXPIRY`  | Refresh token expiration time| `7d`          | No       |
+| `FRONTEND_URL`        | Frontend URL for CORS        | `http://localhost:3001` | No |
 
 ---
 
@@ -462,9 +520,275 @@ For production, consider:
 http://localhost:3000
 ```
 
-### Endpoints
+---
 
-#### 1. Get All Items
+## Authentication Endpoints
+
+### 1. Register New User
+
+**Endpoint:** `POST /auth/register`
+
+**Description:** Create a new user account
+
+**Request Body:**
+
+```json
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "name": "John Doe"
+}
+```
+
+**Response:** `201 Created`
+
+```json
+{
+  "success": true,
+  "message": "User registered successfully",
+  "data": {
+    "user": {
+      "id": 1,
+      "email": "user@example.com",
+      "name": "John Doe",
+      "role": "user",
+      "isVerified": false,
+      "createdAt": "2025-11-29T12:00:00.000Z",
+      "updatedAt": "2025-11-29T12:00:00.000Z"
+    },
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+```
+
+**Note:** `accessToken` and `refreshToken` are also set as `httpOnly` cookies.
+
+---
+
+### 2. Login
+
+**Endpoint:** `POST /auth/login`
+
+**Description:** Authenticate user and get tokens
+
+**Request Body:**
+
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "user": {
+      "id": 1,
+      "email": "user@example.com",
+      "name": "John Doe",
+      "role": "user",
+      "isVerified": false
+    },
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+```
+
+**Note:** `accessToken` and `refreshToken` are also set as `httpOnly` cookies.
+
+---
+
+### 3. Refresh Access Token
+
+**Endpoint:** `POST /auth/refresh`
+
+**Description:** Get a new access token using refresh token
+
+**Request Body:**
+
+```json
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Note:** If `refreshToken` is present in cookies, the body parameter is optional.
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Token refreshed successfully",
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+```
+
+---
+
+### 4. Logout
+
+**Endpoint:** `POST /auth/logout`
+
+**Description:** Revoke refresh token (logout from current device)
+
+**Request Body:**
+
+```json
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Note:** If `refreshToken` is present in cookies, the body parameter is optional.
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Logged out successfully"
+}
+```
+
+---
+
+### 5. Get User Profile (Protected)
+
+**Endpoint:** `GET /auth/profile`
+
+**Description:** Get current user's profile
+
+**Headers:**
+
+```
+Authorization: Bearer <access-token>
+```
+
+**Note:** Or via `accessToken` cookie.
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "email": "user@example.com",
+    "name": "John Doe",
+    "role": "user",
+    "isVerified": false,
+    "createdAt": "2025-11-29T12:00:00.000Z",
+    "updatedAt": "2025-11-29T12:00:00.000Z"
+  }
+}
+```
+
+---
+
+### 6. Update Profile (Protected)
+
+**Endpoint:** `PUT /auth/profile`
+
+**Description:** Update user profile
+
+**Headers:**
+
+```
+Authorization: Bearer <access-token>
+```
+
+**Request Body:**
+
+```json
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com"
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Profile updated successfully",
+  "data": {
+    "id": 1,
+    "email": "jane@example.com",
+    "name": "Jane Doe",
+    "role": "user"
+  }
+}
+```
+
+---
+
+### 7. Change Password (Protected)
+
+**Endpoint:** `POST /auth/change-password`
+
+**Description:** Change user password
+
+**Headers:**
+
+```
+Authorization: Bearer <access-token>
+```
+
+**Request Body:**
+
+```json
+{
+  "currentPassword": "oldpassword123",
+  "newPassword": "newpassword456"
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Password changed successfully. Please login again with your new password."
+}
+```
+
+---
+
+### 8. Logout from All Devices (Protected)
+
+**Endpoint:** `POST /auth/logout-all`
+
+**Description:** Revoke all refresh tokens (logout from all devices)
+
+**Headers:**
+
+```
+Authorization: Bearer <access-token>
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Logged out from 3 device(s) successfully"
+}
+```
+
+---
+
+## Items CRUD Endpoints
+
+### 1. Get All Items
 
 **Endpoint:** `GET /items`
 
@@ -850,9 +1174,82 @@ npx sequelize-cli db:migrate
 
 ## Testing
 
-### Manual Testing
+### Automated Testing
 
-Test all endpoints using the provided curl commands:
+Run the automated test suite:
+
+```bash
+bun test
+```
+
+### Authentication Flow Testing
+
+Test the complete authentication flow:
+
+```bash
+# 1. Register a new user
+curl -X POST http://localhost:3000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "test@example.com",
+    "password": "password123",
+    "name": "Test User"
+  }'
+
+# Response will include accessToken and refreshToken
+# Save the accessToken for subsequent requests
+
+# 2. Login (alternative to register)
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "test@example.com",
+    "password": "password123"
+  }'
+
+# 3. Get user profile (protected route)
+curl http://localhost:3000/auth/profile \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+# 4. Update profile
+curl -X PUT http://localhost:3000/auth/profile \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Updated Name"
+  }'
+
+# 5. Change password
+curl -X POST http://localhost:3000/auth/change-password \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "currentPassword": "password123",
+    "newPassword": "newpassword456"
+  }'
+
+# 6. Refresh access token
+curl -X POST http://localhost:3000/auth/refresh \
+  -H "Content-Type: application/json" \
+  -d '{
+    "refreshToken": "YOUR_REFRESH_TOKEN"
+  }'
+
+# 7. Logout from current device
+curl -X POST http://localhost:3000/auth/logout \
+  -H "Content-Type: application/json" \
+  -d '{
+    "refreshToken": "YOUR_REFRESH_TOKEN"
+  }'
+
+# 8. Logout from all devices
+curl -X POST http://localhost:3000/auth/logout-all \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+### Items CRUD Testing
+
+Test all item endpoints:
 
 ```bash
 # 1. Create an item
@@ -1141,6 +1538,125 @@ bun run db:sync
 - Trust user input
 - Expose stack traces in production
 - Use default credentials
+
+---
+
+## CORS and CSRF Protection
+
+The API includes comprehensive security measures for cookie-based authentication:
+
+### CORS (Cross-Origin Resource Sharing)
+
+Configured via `@elysiajs/cors` plugin to allow your frontend to access the API:
+
+```typescript
+cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:3001",
+  credentials: true, // Required for cookies
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+})
+```
+
+**Key Configuration:**
+
+- **`credentials: true`** - Essential for sending cookies with cross-origin requests
+- **`origin`** - Set to your frontend URL (configurable via `FRONTEND_URL` env variable)
+- In production, set `FRONTEND_URL` to your actual frontend domain
+
+### CSRF (Cross-Site Request Forgery) Protection
+
+Implemented via custom middleware (`src/middleware/csrf.middleware.ts`) that validates Origin/Referer headers:
+
+**How it works:**
+
+1. Checks the `Origin` header matches the `Host` header for state-changing requests
+2. Falls back to `Referer` header validation if no Origin is present
+3. Blocks requests from different origins with 403 Forbidden
+4. Allows API clients (Postman, curl) without Origin/Referer headers
+
+**Protected Methods:**
+
+- POST
+- PUT
+- DELETE
+- PATCH
+
+**Example Error Response:**
+
+```json
+{
+  "success": false,
+  "message": "CSRF validation failed: Origin does not match host"
+}
+```
+
+### Frontend Integration
+
+**Axios:**
+
+```javascript
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:3000',
+  withCredentials: true, // Important: sends cookies
+});
+
+// Login
+await api.post('/auth/login', {
+  email: 'user@example.com',
+  password: 'password123'
+});
+
+// Subsequent requests automatically include cookies
+await api.get('/auth/profile');
+```
+
+**Fetch API:**
+
+```javascript
+// Login
+await fetch('http://localhost:3000/auth/login', {
+  method: 'POST',
+  credentials: 'include', // Important: sends cookies
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    email: 'user@example.com',
+    password: 'password123'
+  })
+});
+
+// Subsequent requests
+await fetch('http://localhost:3000/auth/profile', {
+  credentials: 'include'
+});
+```
+
+### Production Configuration
+
+For production, update your `.env` file:
+
+```env
+FRONTEND_URL=https://yourdomain.com
+NODE_ENV=production
+```
+
+For multiple frontend domains:
+
+```typescript
+cors({
+  origin: [
+    'https://yourdomain.com',
+    'https://www.yourdomain.com',
+    'https://app.yourdomain.com'
+  ],
+  credentials: true,
+  // ... other options
+})
+```
 
 ---
 

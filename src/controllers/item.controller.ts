@@ -47,11 +47,11 @@ export class ItemController {
         message: "Item created successfully",
         data: newItem,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       set.status = 400;
       return {
         success: false,
-        message: error.message || "Error creating item",
+        message: error instanceof Error ? error.message : "Error creating item",
       };
     }
   }
@@ -75,11 +75,11 @@ export class ItemController {
         message: "Item updated successfully",
         data: updatedItem,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       set.status = 400;
       return {
         success: false,
-        message: error.message || "Error updating item",
+        message: error instanceof Error ? error.message : "Error updating item",
       };
     }
   }
@@ -100,11 +100,11 @@ export class ItemController {
         message: "Item deleted successfully",
         data: deletedItem,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       set.status = 400;
       return {
         success: false,
-        message: error.message || "Error deleting item",
+        message: error instanceof Error ? error.message : "Error deleting item",
       };
     }
   }
