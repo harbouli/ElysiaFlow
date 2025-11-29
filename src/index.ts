@@ -5,6 +5,7 @@ import { itemRoutes } from "./routes/item.routes";
 async function initializeDatabase() {
   try {
     await sequelize.authenticate();
+    await sequelize.sync({ alter: true });
     console.log("✓ Database connection established successfully");
   } catch (error) {
     console.error("✗ Unable to connect to database:", error);

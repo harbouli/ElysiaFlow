@@ -49,26 +49,31 @@ A high-performance REST API built with Elysia.js, Bun runtime, PostgreSQL, and S
 ## Features
 
 ✨ **Modern Stack**
+
 - Built with Elysia.js (21x faster than Express.js)
 - Powered by Bun runtime for maximum performance
 - TypeScript for type safety and better DX
 
 🏗️ **Clean Architecture**
+
 - MVC pattern for separation of concerns
 - Modular and scalable structure
 - Easy to maintain and extend
 
 🗄️ **Database**
+
 - PostgreSQL integration
 - Sequelize ORM with TypeScript support
 - Automatic migrations and schema sync
 
 🔒 **Robust**
+
 - Input validation with Elysia's type system
 - Comprehensive error handling
 - Database connection pooling
 
 📝 **Developer Friendly**
+
 - Hot reload in development
 - Detailed API documentation
 - Environment-based configuration
@@ -77,14 +82,14 @@ A high-performance REST API built with Elysia.js, Bun runtime, PostgreSQL, and S
 
 ## Tech Stack
 
-| Technology | Purpose | Version |
-|-----------|---------|---------|
-| [Bun](https://bun.sh/) | JavaScript Runtime | 1.0+ |
-| [Elysia.js](https://elysiajs.com/) | Web Framework | Latest |
-| [TypeScript](https://www.typescriptlang.org/) | Programming Language | 5.0+ |
-| [Sequelize](https://sequelize.org/) | ORM | 6.37+ |
-| [PostgreSQL](https://www.postgresql.org/) | Database | 14+ |
-| [pg](https://www.npmjs.com/package/pg) | PostgreSQL Driver | 8.16+ |
+| Technology                                    | Purpose              | Version |
+| --------------------------------------------- | -------------------- | ------- |
+| [Bun](https://bun.sh/)                        | JavaScript Runtime   | 1.0+    |
+| [Elysia.js](https://elysiajs.com/)            | Web Framework        | Latest  |
+| [TypeScript](https://www.typescriptlang.org/) | Programming Language | 5.0+    |
+| [Sequelize](https://sequelize.org/)           | ORM                  | 6.37+   |
+| [PostgreSQL](https://www.postgresql.org/)     | Database             | 14+     |
+| [pg](https://www.npmjs.com/package/pg)        | PostgreSQL Driver    | 8.16+   |
 
 ---
 
@@ -119,6 +124,7 @@ This project follows the **MVC (Model-View-Controller)** architectural pattern:
 ```
 
 **Benefits:**
+
 - **Separation of Concerns**: Each layer has a single responsibility
 - **Maintainability**: Easy to locate and modify specific functionality
 - **Testability**: Components can be tested independently
@@ -159,17 +165,20 @@ elysia-crud-api/
 ### File Descriptions
 
 **`src/config/database.ts`**
+
 - Sequelize instance configuration
 - Connection pooling settings
 - Environment-based database credentials
 
 **`src/models/item.model.ts`**
+
 - Sequelize model definitions
 - Database schema
 - Data access methods (CRUD operations)
 - Type definitions for TypeScript
 
 **`src/controllers/item.controller.ts`**
+
 - Request/response handlers
 - Business logic
 - Input validation
@@ -177,12 +186,14 @@ elysia-crud-api/
 - HTTP status codes
 
 **`src/routes/item.routes.ts`**
+
 - API endpoint definitions
 - Route-level middleware
 - Request schema validation
 - Maps routes to controller methods
 
 **`src/index.ts`**
+
 - Application initialization
 - Database connection
 - Route registration
@@ -195,11 +206,13 @@ elysia-crud-api/
 Before you begin, ensure you have the following installed:
 
 - **[Bun](https://bun.sh/)** (v1.0 or higher)
+
   ```bash
   curl -fsSL https://bun.sh/install | bash
   ```
 
 - **[PostgreSQL](https://www.postgresql.org/download/)** (v14 or higher)
+
   - macOS: `brew install postgresql@14`
   - Ubuntu: `sudo apt-get install postgresql-14`
   - Windows: Download from [postgresql.org](https://www.postgresql.org/download/windows/)
@@ -233,6 +246,7 @@ cp .env.example .env
 ```
 
 Edit `.env`:
+
 ```env
 DB_HOST=localhost
 DB_PORT=5432
@@ -247,11 +261,13 @@ PORT=3000
 ### 4. Create Database
 
 **Option A: Using PostgreSQL CLI**
+
 ```bash
 createdb elysia_db
 ```
 
 **Option B: Using psql**
+
 ```bash
 psql -U postgres
 CREATE DATABASE elysia_db;
@@ -259,6 +275,7 @@ CREATE DATABASE elysia_db;
 ```
 
 **Option C: Using SQL**
+
 ```sql
 CREATE DATABASE elysia_db;
 ```
@@ -270,6 +287,7 @@ bun run db:sync
 ```
 
 Expected output:
+
 ```
 Connecting to database...
 ✓ Database connection established successfully
@@ -284,9 +302,10 @@ bun run dev
 ```
 
 Expected output:
+
 ```
 ✓ Database connection established successfully
-🦊 Elysia is running at localhost:3000
+ Server is running at  localhost:3000
 ```
 
 ### 7. Test the API
@@ -296,6 +315,7 @@ curl http://localhost:3000
 ```
 
 You should see:
+
 ```json
 {
   "message": "Welcome to Elysia CRUD API with MVC Architecture + Sequelize",
@@ -330,15 +350,15 @@ PORT=3000                     # Server port
 
 ### Environment Descriptions
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `DB_HOST` | PostgreSQL server host | `localhost` | Yes |
-| `DB_PORT` | PostgreSQL server port | `5432` | Yes |
-| `DB_NAME` | Database name | `elysia_db` | Yes |
-| `DB_USER` | Database username | `postgres` | Yes |
-| `DB_PASSWORD` | Database password | `postgres` | Yes |
-| `NODE_ENV` | Environment mode | `development` | No |
-| `PORT` | Server port | `3000` | No |
+| Variable      | Description            | Default       | Required |
+| ------------- | ---------------------- | ------------- | -------- |
+| `DB_HOST`     | PostgreSQL server host | `localhost`   | Yes      |
+| `DB_PORT`     | PostgreSQL server port | `5432`        | Yes      |
+| `DB_NAME`     | Database name          | `elysia_db`   | Yes      |
+| `DB_USER`     | Database username      | `postgres`    | Yes      |
+| `DB_PASSWORD` | Database password      | `postgres`    | Yes      |
+| `NODE_ENV`    | Environment mode       | `development` | No       |
+| `PORT`        | Server port            | `3000`        | No       |
 
 ---
 
@@ -371,6 +391,7 @@ CREATE DATABASE elysia_db;
 #### Method 3: GUI Tools
 
 Use tools like:
+
 - [pgAdmin](https://www.pgadmin.org/)
 - [DBeaver](https://dbeaver.io/)
 - [TablePlus](https://tableplus.com/)
@@ -384,12 +405,14 @@ bun run db:sync
 ```
 
 This command will:
+
 1. Connect to the database
 2. Create the `items` table if it doesn't exist
 3. Update the table schema to match the model (if changed)
 4. Add indexes and constraints
 
 **Table Schema:**
+
 ```sql
 CREATE TABLE items (
   id SERIAL PRIMARY KEY,
@@ -411,6 +434,7 @@ bun run dev
 ```
 
 Features:
+
 - Auto-restart on file changes
 - Development logging enabled
 - Source maps for debugging
@@ -422,6 +446,7 @@ bun run src/index.ts
 ```
 
 For production, consider:
+
 - Setting `NODE_ENV=production`
 - Using a process manager (PM2, systemd)
 - Enabling connection pooling
@@ -446,11 +471,13 @@ http://localhost:3000
 **Description:** Retrieve all items from the database, ordered by creation date (newest first)
 
 **Request:**
+
 ```bash
 curl http://localhost:3000/items
 ```
 
 **Response:** `200 OK`
+
 ```json
 {
   "success": true,
@@ -476,14 +503,17 @@ curl http://localhost:3000/items
 **Description:** Retrieve a specific item by its ID
 
 **Parameters:**
+
 - `id` (path parameter, required): Item ID (integer)
 
 **Request:**
+
 ```bash
 curl http://localhost:3000/items/1
 ```
 
 **Response:** `200 OK`
+
 ```json
 {
   "success": true,
@@ -498,6 +528,7 @@ curl http://localhost:3000/items/1
 ```
 
 **Error Response:** `404 Not Found`
+
 ```json
 {
   "success": false,
@@ -514,6 +545,7 @@ curl http://localhost:3000/items/1
 **Description:** Create a new item
 
 **Request Body:**
+
 ```json
 {
   "name": "string (required)",
@@ -522,10 +554,12 @@ curl http://localhost:3000/items/1
 ```
 
 **Validation:**
+
 - `name`: Required, non-empty string, max 255 characters
 - `description`: Required, non-empty string
 
 **Request:**
+
 ```bash
 curl -X POST http://localhost:3000/items \
   -H "Content-Type: application/json" \
@@ -536,6 +570,7 @@ curl -X POST http://localhost:3000/items \
 ```
 
 **Response:** `201 Created`
+
 ```json
 {
   "success": true,
@@ -551,6 +586,7 @@ curl -X POST http://localhost:3000/items \
 ```
 
 **Error Response:** `400 Bad Request`
+
 ```json
 {
   "success": false,
@@ -567,9 +603,11 @@ curl -X POST http://localhost:3000/items \
 **Description:** Update an existing item
 
 **Parameters:**
+
 - `id` (path parameter, required): Item ID (integer)
 
 **Request Body:**
+
 ```json
 {
   "name": "string (optional)",
@@ -580,6 +618,7 @@ curl -X POST http://localhost:3000/items \
 **Note:** At least one field must be provided
 
 **Request:**
+
 ```bash
 curl -X PUT http://localhost:3000/items/1 \
   -H "Content-Type: application/json" \
@@ -589,6 +628,7 @@ curl -X PUT http://localhost:3000/items/1 \
 ```
 
 **Response:** `200 OK`
+
 ```json
 {
   "success": true,
@@ -604,6 +644,7 @@ curl -X PUT http://localhost:3000/items/1 \
 ```
 
 **Error Response:** `404 Not Found`
+
 ```json
 {
   "success": false,
@@ -620,14 +661,17 @@ curl -X PUT http://localhost:3000/items/1 \
 **Description:** Delete an item permanently
 
 **Parameters:**
+
 - `id` (path parameter, required): Item ID (integer)
 
 **Request:**
+
 ```bash
 curl -X DELETE http://localhost:3000/items/1
 ```
 
 **Response:** `200 OK`
+
 ```json
 {
   "success": true,
@@ -643,6 +687,7 @@ curl -X DELETE http://localhost:3000/items/1
 ```
 
 **Error Response:** `404 Not Found`
+
 ```json
 {
   "success": false,
@@ -661,7 +706,9 @@ All API responses follow a consistent structure:
 ```json
 {
   "success": true,
-  "data": { /* response data */ },
+  "data": {
+    /* response data */
+  },
   "message": "Optional success message",
   "count": "Optional count (for list responses)"
 }
@@ -678,13 +725,13 @@ All API responses follow a consistent structure:
 
 ### HTTP Status Codes
 
-| Code | Meaning | Usage |
-|------|---------|-------|
-| 200 | OK | Successful GET, PUT, DELETE |
-| 201 | Created | Successful POST (creation) |
-| 400 | Bad Request | Validation error, missing required fields |
-| 404 | Not Found | Resource doesn't exist |
-| 500 | Internal Server Error | Server-side error |
+| Code | Meaning               | Usage                                     |
+| ---- | --------------------- | ----------------------------------------- |
+| 200  | OK                    | Successful GET, PUT, DELETE               |
+| 201  | Created               | Successful POST (creation)                |
+| 400  | Bad Request           | Validation error, missing required fields |
+| 404  | Not Found             | Resource doesn't exist                    |
+| 500  | Internal Server Error | Server-side error                         |
 
 ---
 
@@ -695,11 +742,13 @@ The API implements comprehensive error handling:
 ### Validation Errors (400)
 
 Returned when:
+
 - Required fields are missing
 - Data types are incorrect
 - Validation rules fail
 
 Example:
+
 ```json
 {
   "success": false,
@@ -710,9 +759,11 @@ Example:
 ### Not Found Errors (404)
 
 Returned when:
+
 - Requested resource doesn't exist
 
 Example:
+
 ```json
 {
   "success": false,
@@ -723,10 +774,12 @@ Example:
 ### Database Errors (400)
 
 Returned when:
+
 - Database constraints violated
 - Sequelize validation fails
 
 Example:
+
 ```json
 {
   "success": false,
@@ -757,6 +810,7 @@ await sequelize.sync({ alter: true });
 ```
 
 **What it does:**
+
 - Creates tables if they don't exist
 - Adds new columns
 - Updates column types
@@ -769,21 +823,25 @@ await sequelize.sync({ alter: true });
 For production environments, use Sequelize migrations:
 
 1. Install Sequelize CLI:
+
 ```bash
 bun add -d sequelize-cli
 ```
 
 2. Initialize migrations:
+
 ```bash
 npx sequelize-cli init
 ```
 
 3. Generate migration:
+
 ```bash
 npx sequelize-cli migration:generate --name create-items-table
 ```
 
 4. Run migrations:
+
 ```bash
 npx sequelize-cli db:migrate
 ```
@@ -820,6 +878,7 @@ curl -X DELETE http://localhost:3000/items/1
 ### Using Postman or Insomnia
 
 1. Import the following collection:
+
    - Base URL: `http://localhost:3000`
    - Create requests for each endpoint
    - Set `Content-Type: application/json` header
@@ -854,8 +913,10 @@ export interface UserAttributes {
 
 interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
 
-export class User extends Model<UserAttributes, UserCreationAttributes>
-  implements UserAttributes {
+export class User
+  extends Model<UserAttributes, UserCreationAttributes>
+  implements UserAttributes
+{
   public id!: number;
   public email!: string;
   public name!: string;
@@ -904,7 +965,10 @@ class UserModel {
     return await User.create({ email, name });
   }
 
-  async update(id: number, data: Partial<UserAttributes>): Promise<User | null> {
+  async update(
+    id: number,
+    data: Partial<UserAttributes>
+  ): Promise<User | null> {
     const user = await User.findByPk(id);
     if (!user) return null;
     await user.update(data);
@@ -995,7 +1059,7 @@ export const userRoutes = new Elysia({ prefix: "/users" })
       name: t.String(),
     }),
   });
-  // Add PUT and DELETE routes...
+// Add PUT and DELETE routes...
 ```
 
 #### 4. Register Routes (`src/index.ts`)
@@ -1006,7 +1070,7 @@ import { userRoutes } from "./routes/user.routes";
 const app = new Elysia()
   // ... existing routes
   .use(itemRoutes)
-  .use(userRoutes)  // Add this line
+  .use(userRoutes) // Add this line
   .listen(3000);
 ```
 
@@ -1016,7 +1080,7 @@ Import the new model in `src/scripts/sync-db.ts`:
 
 ```typescript
 import "../models/item.model";
-import "../models/user.model";  // Add this line
+import "../models/user.model"; // Add this line
 ```
 
 #### 6. Sync database
@@ -1032,6 +1096,7 @@ bun run db:sync
 ### Code Organization
 
 ✅ **Do:**
+
 - Follow the MVC pattern strictly
 - Keep controllers thin (business logic in models)
 - Use TypeScript interfaces for type safety
@@ -1039,6 +1104,7 @@ bun run db:sync
 - Validate input at the route level
 
 ❌ **Don't:**
+
 - Mix database logic in controllers
 - Hardcode configuration values
 - Skip input validation
@@ -1047,12 +1113,14 @@ bun run db:sync
 ### Database
 
 ✅ **Do:**
+
 - Use connection pooling
 - Implement indexes on frequently queried columns
 - Use transactions for multi-step operations
 - Close connections properly
 
 ❌ **Don't:**
+
 - Use `sync({ force: true })` in production
 - Store sensitive data in plain text
 - Skip database backups
@@ -1060,6 +1128,7 @@ bun run db:sync
 ### Security
 
 ✅ **Do:**
+
 - Validate and sanitize all inputs
 - Use environment variables for secrets
 - Implement rate limiting (for production)
@@ -1067,6 +1136,7 @@ bun run db:sync
 - Keep dependencies updated
 
 ❌ **Don't:**
+
 - Commit `.env` file
 - Trust user input
 - Expose stack traces in production
@@ -1081,11 +1151,13 @@ bun run db:sync
 #### 1. Database Connection Error
 
 **Error:**
+
 ```
 SequelizeConnectionError: database "elysia_db" does not exist
 ```
 
 **Solution:**
+
 ```bash
 createdb elysia_db -U postgres
 ```
@@ -1095,11 +1167,13 @@ createdb elysia_db -U postgres
 #### 2. Port Already in Use
 
 **Error:**
+
 ```
 Error: listen EADDRINUSE: address already in use :::3000
 ```
 
 **Solution:**
+
 ```bash
 # Find process using port 3000
 lsof -i :3000
@@ -1116,14 +1190,17 @@ PORT=3001
 #### 3. Authentication Failed
 
 **Error:**
+
 ```
 SequelizeConnectionError: password authentication failed
 ```
 
 **Solution:**
+
 - Verify credentials in `.env`
 - Check PostgreSQL user exists
 - Reset password if needed:
+
 ```bash
 psql -U postgres
 ALTER USER postgres PASSWORD 'newpassword';
@@ -1134,11 +1211,13 @@ ALTER USER postgres PASSWORD 'newpassword';
 #### 4. Bun Not Found
 
 **Error:**
+
 ```
 command not found: bun
 ```
 
 **Solution:**
+
 ```bash
 # Install Bun
 curl -fsSL https://bun.sh/install | bash
@@ -1152,11 +1231,13 @@ source ~/.bashrc  # or ~/.zshrc
 #### 5. Module Not Found
 
 **Error:**
+
 ```
 Cannot find module './routes/item.routes'
 ```
 
 **Solution:**
+
 ```bash
 # Ensure all files exist
 ls -la src/routes/
@@ -1173,14 +1254,14 @@ bun install
 
 ```typescript
 // Add indexes in your model
-Item.init({
-  // ... fields
-}, {
-  indexes: [
-    { fields: ['created_at'] },
-    { fields: ['name'] },
-  ]
-});
+Item.init(
+  {
+    // ... fields
+  },
+  {
+    indexes: [{ fields: ["created_at"] }, { fields: ["name"] }],
+  }
+);
 ```
 
 ### 2. Connection Pooling
@@ -1204,7 +1285,7 @@ const items = await Item.findAll();
 
 // Select specific fields
 const items = await Item.findAll({
-  attributes: ['id', 'name'],
+  attributes: ["id", "name"],
 });
 ```
 
@@ -1291,6 +1372,7 @@ If you have questions or need help:
 ## Author
 
 **Mohamed Harbouli**
+
 - GitHub: [@harbouli](https://github.com/harbouli)
 - Portfolio: [github.com/harbouli](https://github.com/harbouli)
 
@@ -1299,6 +1381,7 @@ If you have questions or need help:
 ## Acknowledgments
 
 Built with:
+
 - [Elysia.js](https://elysiajs.com/) - Web framework
 - [Bun](https://bun.sh/) - JavaScript runtime
 - [Sequelize](https://sequelize.org/) - ORM
