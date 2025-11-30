@@ -2,6 +2,10 @@ import sequelize from "../config/database";
 import "../models/item.model";
 import "../models/user.model";
 import "../models/refreshToken.model";
+import "../models/address.model";
+import "../models/wishlist.model";
+import "../models/recentlyViewed.model";
+import "../models/passwordReset.model";
 
 async function syncDatabase() {
   try {
@@ -15,6 +19,10 @@ async function syncDatabase() {
     console.log("  - users");
     console.log("  - refresh_tokens");
     console.log("  - items");
+    console.log("  - addresses");
+    console.log("  - wishlists");
+    console.log("  - recently_viewed");
+    console.log("  - password_resets");
 
     process.exit(0);
   } catch (error) {

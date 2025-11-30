@@ -10,7 +10,8 @@ export const registerSchema = v.object({
     v.string(),
     v.minLength(6, "Password must be at least 6 characters")
   ),
-  name: v.pipe(v.string(), v.minLength(1, "Name is required")),
+  firstName: v.pipe(v.string(), v.minLength(1, "First name is required")),
+  lastName: v.pipe(v.string(), v.minLength(1, "Last name is required")),
 });
 
 export const loginSchema = v.object({
@@ -19,8 +20,26 @@ export const loginSchema = v.object({
 });
 
 export const updateProfileSchema = v.object({
-  name: v.optional(v.pipe(v.string(), v.minLength(1, "Name cannot be empty"))),
+  firstName: v.optional(v.pipe(v.string(), v.minLength(1, "First name cannot be empty"))),
+  lastName: v.optional(v.pipe(v.string(), v.minLength(1, "Last name cannot be empty"))),
   email: v.optional(v.pipe(v.string(), v.email("Invalid email address"))),
+  bio: v.optional(v.string()),
+  avatarUrl: v.optional(v.pipe(v.string(), v.url("Invalid URL"))),
+  phoneNumber: v.optional(v.string()),
+  gender: v.optional(v.picklist(["male", "female", "other"])),
+  birthday: v.optional(v.pipe(v.string(), v.isoDate("Invalid date format"))),
+});
+
+export const forgotPasswordSchema = v.object({
+  email: v.pipe(v.string(), v.email("Invalid email address")),
+});
+
+export const resetPasswordSchema = v.object({
+  token: v.pipe(v.string(), v.minLength(1, "Token is required")),
+  newPassword: v.pipe(
+    v.string(),
+    v.minLength(6, "Password must be at least 6 characters")
+  ),
 });
 
 export const changePasswordSchema = v.object({
@@ -38,6 +57,18 @@ export const authRoutes = new Elysia({ prefix: "/auth" })
 
   .post("/login", AuthController.login, {
     body: loginSchema,
+  })
+
+  .post("/forgot-password", AuthController.forgotPassword, {
+    body: forgotPasswordSchema,
+    detail: { tags: ["Auth"] },
+  })
+  .post("/reset-password", AuthController.resetPassword, {
+    body: resetPasswordSchema,
+    detail: { tags: ["Auth"] },
+  })
+  .post("/verify-email", AuthController.verifyEmail, {
+    detail: { tags: ["Auth"] },
   })
 
   .post("/refresh", AuthController.refresh)

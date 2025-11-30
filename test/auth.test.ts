@@ -11,7 +11,8 @@ describe("Auth Flow", () => {
   it("should register a user and set cookies", async () => {
     const email = `test-${Date.now()}@example.com`;
     const password = "password123";
-    const name = "Test User";
+    const firstName = "Test";
+    const lastName = "User";
 
     const response = await app.handle(
       new Request("http://localhost/auth/register", {
@@ -19,7 +20,7 @@ describe("Auth Flow", () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password, firstName, lastName }),
       })
     );
 
@@ -33,13 +34,14 @@ describe("Auth Flow", () => {
     // First register
     const email = `login-${Date.now()}@example.com`;
     const password = "password123";
-    const name = "Login User";
+    const firstName = "Login";
+    const lastName = "User";
 
     await app.handle(
       new Request("http://localhost/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password, firstName, lastName }),
       })
     );
 

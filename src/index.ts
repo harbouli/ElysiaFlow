@@ -2,6 +2,10 @@ import { Elysia } from "elysia";
 import sequelize from "./config/database";
 import { itemRoutes } from "./routes/item.routes";
 import { authRoutes } from "./routes/auth.routes";
+import { oauthRoutes } from "./routes/oauth.routes";
+import { addressRoutes } from "./routes/address.routes";
+import { customerRoutes } from "./routes/customer.routes";
+import { adminRoutes } from "./routes/admin.routes";
 import { openapi } from "@elysiajs/openapi";
 import { toJsonSchema } from "@valibot/to-json-schema";
 import { cookie } from "@elysiajs/cookie";
@@ -10,17 +14,16 @@ import { csrfProtection } from "./middleware/csrf.middleware";
 async function initializeDatabase() {
   try {
     await sequelize.authenticate();
-    await sequelize.sync({ alter: true });
     console.log("✓ Database connection established successfully");
   } catch (error) {
-    console.error("✗ Unable to connect to database:", error);
+    console.error("✗ Unable to connect to the database:", error);
     process.exit(1);
   }
 }
 
-await initializeDatabase();
+initializeDatabase();
 
-const app = new Elysia()
+export const app = new Elysia()
   // CORS configuration for cookie-based auth
   .use(
     cors({
@@ -42,6 +45,10 @@ const app = new Elysia()
   )
   .use(authRoutes)
   .use(itemRoutes)
+  .use(oauthRoutes)
+  .use(addressRoutes)
+  .use(customerRoutes)
+  .use(adminRoutes)
   .listen(3000);
 
 console.log(

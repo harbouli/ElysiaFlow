@@ -6,15 +6,24 @@ export interface UserAttributes {
   id: number;
   email: string;
   password: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  bio?: string | null;
+  avatarUrl?: string | null;
+  phoneNumber?: string | null;
+  gender?: "male" | "female" | "other" | null;
+  birthday?: Date | null;
+  isBanned: boolean;
   role: "user" | "admin";
+  authProvider: "local" | "google" | "apple";
+  authProviderId?: string | null;
   isVerified: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 interface UserCreationAttributes
-  extends Optional<UserAttributes, "id" | "role" | "isVerified"> {}
+  extends Optional<UserAttributes, "id" | "role" | "isVerified" | "authProvider" | "authProviderId" | "isBanned"> {}
 
 export class User
   extends Model<UserAttributes, UserCreationAttributes>
@@ -23,21 +32,33 @@ export class User
   declare id: number;
   declare email: string;
   declare password: string;
-  declare name: string;
+  declare firstName: string;
+  declare lastName: string;
+  declare bio: string | null;
+  declare avatarUrl: string | null;
+  declare phoneNumber: string | null;
+  declare gender: "male" | "female" | "other" | null;
+  declare birthday: Date | null;
+  declare isBanned: boolean;
   declare role: "user" | "admin";
+  declare authProvider: "local" | "google" | "apple";
+  declare authProviderId: string | null;
   declare isVerified: boolean;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
 
-  // Method to compare passwords
   public async comparePassword(candidatePassword: string): Promise<boolean> {
     return await bcrypt.compare(candidatePassword, this.password);
   }
 
-  // Method to exclude password from JSON
   public toJSON(): Omit<UserAttributes, "password"> {
     const { password, ...values } = this.get();
-    return values as Omit<UserAttributes, "password">;
+    return { ...values, fullName: this.fullName } as Omit<UserAttributes, "password"> & { fullName: string };
+  }
+
+  // Virtual field for full name
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
   }
 }
 
@@ -68,19 +89,67 @@ User.init(
         },
       },
     },
-    name: {
+    firstName: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: "Name cannot be empty",
+          msg: "First name cannot be empty",
         },
       },
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: "Last name cannot be empty",
+        },
+      },
+    },
+    bio: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    avatarUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        isUrl: {
+          msg: "Must be a valid URL",
+        },
+      },
+    },
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    gender: {
+      type: DataTypes.ENUM("male", "female", "other"),
+      allowNull: true,
+    },
+    birthday: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    isBanned: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
     },
     role: {
       type: DataTypes.ENUM("user", "admin"),
       defaultValue: "user",
       allowNull: false,
+    },
+    authProvider: {
+      type: DataTypes.ENUM("local", "google", "apple"),
+      defaultValue: "local",
+      allowNull: false,
+    },
+    authProviderId: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     isVerified: {
       type: DataTypes.BOOLEAN,
@@ -94,14 +163,12 @@ User.init(
     timestamps: true,
     underscored: true,
     hooks: {
-      // Hash password before creating user
       beforeCreate: async (user: User) => {
         if (user.password) {
           const salt = await bcrypt.genSalt(10);
           user.password = await bcrypt.hash(user.password, salt);
         }
       },
-      // Hash password before updating if it changed
       beforeUpdate: async (user: User) => {
         if (user.changed("password")) {
           const salt = await bcrypt.genSalt(10);
@@ -113,31 +180,49 @@ User.init(
 );
 
 class UserModel {
-  // Find all users (excluding passwords)
   async findAll(): Promise<User[]> {
     return await User.findAll({
       order: [["createdAt", "DESC"]],
     });
   }
 
-  // Find user by ID
   async findById(id: number): Promise<User | null> {
     return await User.findByPk(id);
   }
 
-  // Find user by email
   async findByEmail(email: string): Promise<User | null> {
     return await User.findOne({ where: { email } });
   }
 
-  // Create new user
+  async findByProviderId(
+    provider: "google" | "apple",
+    providerId: string
+  ): Promise<User | null> {
+    return await User.findOne({
+      where: { authProvider: provider, authProviderId: providerId },
+    });
+  }
+
   async create(
     email: string,
     password: string,
-    name: string,
-    role: "user" | "admin" = "user"
+    firstName: string,
+    lastName: string,
+    role: "user" | "admin" = "user",
+    authProvider: "local" | "google" | "apple" = "local",
+    authProviderId: string | null = null,
+    additionalFields: Partial<Pick<UserAttributes, "bio" | "avatarUrl" | "phoneNumber">> = {}
   ): Promise<User> {
-    return await User.create({ email, password, name, role });
+    return await User.create({
+      email,
+      password,
+      firstName,
+      lastName,
+      role,
+      authProvider,
+      authProviderId,
+      ...additionalFields,
+    });
   }
 
   // Update user
