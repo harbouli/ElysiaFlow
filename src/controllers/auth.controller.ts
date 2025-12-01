@@ -11,7 +11,7 @@ import {
   changePasswordSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
-} from "../routes/auth.routes";
+} from "../schemas/auth.schemas";
 import { passwordResetModel } from "../models/passwordReset.model";
 
 export class AuthController {
