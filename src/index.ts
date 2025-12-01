@@ -48,9 +48,13 @@ export const app = new Elysia()
   .use(oauthRoutes)
   .use(addressRoutes)
   .use(customerRoutes)
-  .use(adminRoutes)
-  .listen(3000);
+  .use(adminRoutes);
 
-console.log(
-  `🫡 Server is running at ${app.server?.hostname}:${app.server?.port}`
-);
+// Only listen if this file is being run directly
+if (import.meta.main) {
+  app.listen(3001);
+  console.log(
+    `🫡 Server is running at ${app.server?.hostname}:${app.server?.port}`
+  );
+}
+

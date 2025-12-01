@@ -20,8 +20,12 @@ export const loginSchema = v.object({
 });
 
 export const updateProfileSchema = v.object({
-  firstName: v.optional(v.pipe(v.string(), v.minLength(1, "First name cannot be empty"))),
-  lastName: v.optional(v.pipe(v.string(), v.minLength(1, "Last name cannot be empty"))),
+  firstName: v.optional(
+    v.pipe(v.string(), v.minLength(1, "First name cannot be empty"))
+  ),
+  lastName: v.optional(
+    v.pipe(v.string(), v.minLength(1, "Last name cannot be empty"))
+  ),
   email: v.optional(v.pipe(v.string(), v.email("Invalid email address"))),
   bio: v.optional(v.string()),
   avatarUrl: v.optional(v.pipe(v.string(), v.url("Invalid URL"))),
