@@ -1,5 +1,6 @@
 import { Elysia } from "elysia";
 import { oauth2 } from "elysia-oauth2";
+import jwt from "jsonwebtoken";
 import { AuthController } from "../controllers/auth.controller";
 
 export const oauthRoutes = new Elysia({ prefix: "/auth" })
@@ -64,8 +65,8 @@ export const oauthRoutes = new Elysia({ prefix: "/auth" })
       
       // Let's try to decode the id_token here or use a library.
       // We have jsonwebtoken installed.
-      const jwt = require("jsonwebtoken");
-      const decoded = jwt.decode(token.idToken);
+      // const jwt = require("jsonwebtoken");
+      const decoded = jwt.decode(token.idToken());
       
       // Apple only sends name/email on first login in the body, which elysia-oauth2 might capture?
       // If not, we rely on what's in the token.
