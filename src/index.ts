@@ -52,7 +52,7 @@ export const app = new Elysia()
 
 // Only listen if this file is being run directly
 if (import.meta.main) {
-  app.listen(3001);
+  app.listen(process.env.PORT || 3001);
   console.log(
     `🫡 Server is running at ${app.server?.hostname}:${app.server?.port}`
   );
