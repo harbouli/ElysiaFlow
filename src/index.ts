@@ -43,6 +43,7 @@ export const app = new Elysia()
       mapJsonSchema: { valibot: toJsonSchema },
     })
   )
+  .get("/", () => ({ status: "ok", message: "Elysia server is running" }))
   .use(authRoutes)
   .use(itemRoutes)
   .use(oauthRoutes)
