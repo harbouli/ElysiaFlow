@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "bun run --watch src/index.ts",
     "db:sync": "bun run src/scripts/sync-db.ts",
-    "build": "echo 'No build step required'"
+    "build": "bun build --compile --minify-whitespace --minify-syntax --target bun --outfile server src/index.ts",
+    "start": "./server"
   },
   "dependencies": {
     "@elysiajs/cookie": "^0.8.0",
