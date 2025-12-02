@@ -37,7 +37,7 @@ export const oauthRoutes = new Elysia({ prefix: "/auth" })
     try {
         const user = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
             headers: {
-                Authorization: `Bearer ${token.accessToken}`
+                Authorization: `Bearer ${token.accessToken()}`
             }
         }).then(res => res.json());
         

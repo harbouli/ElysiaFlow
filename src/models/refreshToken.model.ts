@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional, Op } from "sequelize";
-import sequelize from "../config/database";
+import { sequelize } from "../config/database";
 import { User } from "./user.model";
 
 export interface RefreshTokenAttributes {

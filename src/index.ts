@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
-import sequelize from "./config/database";
+import { sequelize } from "./config/database";
 import { itemRoutes } from "./routes/item.routes";
 import { authRoutes } from "./routes/auth.routes";
 import { oauthRoutes } from "./routes/oauth.routes";

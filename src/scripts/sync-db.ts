@@ -1,4 +1,4 @@
-import sequelize from "../config/database";
+import { sequelize } from "../config/database";
 import "../models/item.model";
 import "../models/user.model";
 import "../models/refreshToken.model";
