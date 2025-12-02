@@ -4,7 +4,8 @@
   "version": "1.0.50",
   "scripts": {
     "dev": "bun run --watch src/index.ts",
-    "db:sync": "bun run src/scripts/sync-db.ts"
+    "db:sync": "bun run src/scripts/sync-db.ts",
+    "build": "echo 'No build step required'"
   },
   "dependencies": {
     "@elysiajs/cookie": "^0.8.0",
